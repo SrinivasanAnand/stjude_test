@@ -1,0 +1,2 @@
+Files already downloaded and verified
+Mean accuracy over 10000 images: 83.080%
