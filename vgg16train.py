@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import torch, torchvision
 import torch.nn as nn
 import vgg16
@@ -136,7 +135,7 @@ dataloader_train = torch.utils.data.DataLoader(
     batch_size=N_BATCH,
     shuffle=True,
     drop_last=True,
-    num_workers=0)
+    num_workers=2)
 
 # Define the possible classes in CIFAR10
 class_names = [
