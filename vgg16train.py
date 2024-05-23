@@ -3,24 +3,22 @@ import torch, torchvision
 import torch.nn as nn
 import vgg16
 
-# TODO: Choose hyper-parameters
-
-# Model - either neural network or logistic regression
+# Model
 MODEL_NAME = 'vgg16'
 
-# Batch size - number of images within a training batch of one training iteration
+# Batch size
 N_BATCH = 16
 
-# Training epoch - number of passes through the full training dataset
+# Training epochs
 N_EPOCH = 20
 
-# Learning rate - step size to update parameters
+# Learning rate
 LEARNING_RATE = 0.005
 
-# Learning rate decay - scaling factor to decrease learning rate at the end of each decay period
+# Learning rate decay
 LEARNING_RATE_DECAY = 0.50
 
-# Learning rate decay period - number of epochs before reducing/decaying learning rate
+# Learning rate decay period
 LEARNING_RATE_DECAY_PERIOD = 20
 
 def train(model,
@@ -57,11 +55,10 @@ def train(model,
     device = 'cuda' if device == 'gpu' or device == 'cuda' else 'cpu'
     device = torch.device(device)
 
-    # TODO: Move model to device
+    # Move model to device
     model = model.to(device)
 
-    # TODO: Define cross entropy loss
-    # https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
+    # Cross entropy loss
     loss_func = torch.nn.CrossEntropyLoss()
 
     for epoch in range(n_epoch):
@@ -69,36 +66,25 @@ def train(model,
         # Accumulate total loss for each epoch
         total_loss = 0.0
 
-        # TODO: Decrease learning rate when learning rate decay period is met
-        # Directly modify param_groups in optimizer to set new learning rate
-        # e.g. decrease learning rate by a factor of decay rate every 2 epoch
+        # Decrease learning rate as necessary
         if epoch and epoch % learning_rate_decay_period == 0:
             pass
 
         for batch, (images, labels) in enumerate(dataloader):
 
-            # TODO: Move images and labels to device
+            # Move images and labels to device
             images = images.to(device)
             labels = labels.to(device)
 
-            # TODO: Vectorize images from (N, H, W, C) to (N, d)
-            #n_dim = np.prod(images.shape[1:])
-            #images = images.view(-1, n_dim)
-
-            # TODO: Forward through the model
             outputs = model(images)
 
-            # TODO: Clear gradients so we don't accumlate them from previous batches
             optimizer.zero_grad()
 
-            # TODO: Compute loss function
             loss = loss_func(outputs, labels)
 
-            # TODO: Update parameters by backpropagation
             loss.backward()
             optimizer.step()
 
-            # TODO: Accumulate total loss for the epoch
             total_loss = total_loss + loss.item()
 
         mean_loss = total_loss / len(dataloader)
@@ -108,13 +94,11 @@ def train(model,
 
     return model
 
-# Create transformations convert data to torch tensor
-# https://pytorch.org/docs/stable/torchvision/transforms.html
+# Convert data to torch tensor
 transforms = torchvision.transforms.Compose([
     torchvision.transforms.ToTensor(),
 ])
 
-# Set path to save checkpoint
 checkpoint_path = './checkpoint-{}.pth'.format(MODEL_NAME)
 
 '''
@@ -127,9 +111,6 @@ cifar10_train = torchvision.datasets.CIFAR10(
     download=True,
     transform=transforms)
 
-# TODO: Setup a dataloader (iterator) to fetch from the training set using
-# torch.utils.data.DataLoader and set shuffle=True, drop_last=True, num_workers=2
-# Set your batch size to the hyperparameter N_BATCH
 dataloader_train = torch.utils.data.DataLoader(
     cifar10_train,
     batch_size=N_BATCH,
@@ -137,7 +118,7 @@ dataloader_train = torch.utils.data.DataLoader(
     drop_last=True,
     num_workers=2)
 
-# Define the possible classes in CIFAR10
+# Possible classes in CIFAR10
 class_names = [
     'plane',
     'car',
@@ -151,7 +132,6 @@ class_names = [
     'truck'
 ]
 
-# CIFAR10 has 10 classes
 n_class = len(class_names)
 
 '''
@@ -170,10 +150,8 @@ optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
 '''
 Train model and store weights
 '''
-# TODO: Set model to training mode
 model.train()
 
-# TODO: Train model with device='cuda'
 model = train(
     model,
     dataloader_train,
@@ -183,5 +161,4 @@ model = train(
     learning_rate_decay_period=LEARNING_RATE_DECAY_PERIOD,
     device='cuda')
 
-# TODO: Save weights into checkpoint path
 torch.save({'state_dict' : model.state_dict()}, checkpoint_path)

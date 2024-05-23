@@ -14,11 +14,6 @@ class VGG16(nn.Module):
     def __init__(self, n_input_feature, n_output):
         super(VGG16, self).__init__()
 
-        # Create your 6-layer neural network using fully connected layers with ReLU activations
-        # https://pytorch.org/docs/stable/generated/torch.nn.Linear.html
-        # https://pytorch.org/docs/stable/generated/torch.nn.functional.relu.html
-        # https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html
-
         # n_input_feature = image H x W
         max_pool_layers = 5
         n_input_feature_reduced = 32 // (2 ** max_pool_layers)
@@ -105,8 +100,6 @@ class VGG16(nn.Module):
             torch.Tensor[float32]
                 tensor of n_output predicted class
         '''
-
-        # TODO: Implement forward function
 
         #Layer 1
         x = self.conv_layer_1(x)
